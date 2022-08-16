@@ -10,7 +10,7 @@ namespace _01_consol
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hellow World!");
+            Console.WriteLine("PARK JUN YOUNG"); // 실습1 : 자기 이름 출력해보기
             Console.ReadKey();
         }
     }
