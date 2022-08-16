@@ -10,7 +10,7 @@ namespace _01_consol
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hellow World");
+            Console.WriteLine("Hellow World!");
             Console.ReadKey();
         }
     }
