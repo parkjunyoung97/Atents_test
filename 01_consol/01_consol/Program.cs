@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace _01_consol
 {
@@ -11,108 +14,80 @@ namespace _01_consol
     {
         static void Main(string[] args)
         {
-            int sumResult = Sum(10, 20);
-            Console.WriteLine(sumResult);
+            int player_act=0;  // 행동 키입력
+            int player_act2 = 0; // 스킬 키입력
+            Human h1 = new Human(); //Human 클래스 Player h1 생성
+            Orc h2 = new Orc(); // Orc 클래스 h2 생성
 
-            string name = "너굴맨";
-            int level = 2;
-            int hp = 10;
-            int maxHP = 20;
-            float exp = 0.1f;
-            float maxExp = 1.0f;
+            h1.TestPrintStatus();
+            h2.TestPrintStatus();
 
-            status_user(name, level, hp, maxHP, exp, maxExp);
-
-
-            Console.ReadKey();
-        }
-        static int Sum(int a, int b) // 함수의 구성요소 : 이름,리턴타입,파라메터(매개변수),함수바디
-        {
-            int result = a + b;
-            return result;
-        }
-
-        static void status_user(string name, int level, int hp, int maxHP, float exp, float maxExp)
-        {
-            Console.WriteLine($"아이디 : {name}");
-            Console.WriteLine($"레벨 : {level}");
-            Console.WriteLine($"HP : {hp}");
-            Console.WriteLine($"maxHP : {maxHP}");
-            Console.WriteLine($"현재 경험치 : {exp}");
-            Console.WriteLine($"레벨업까지 필요 경험치 : {maxExp-exp}");
-        }
-
-        static void Test()
-        {
-            Console.WriteLine("PARK JUN YOUNG"); // 실습1 : 자기 이름 출력해보기 
-            //string str = Console.ReadLine();  // 입력
-            //Console.WriteLine(str);           // 출력
-
-            /*int level_real;
-            int hp_real;
-            float exp_real;
-
-            Console.Write("이름을 입력하세요 : ");
-            String name = Console.ReadLine();
-            Console.Write("레벨을 입력하세요 : ");
-            string level = Console.ReadLine();
-            Console.Write("hp를 입력하세요 : ");
-            string hp = Console.ReadLine();
-            Console.Write("exp를 입력하세요 : ");
-            string exp = Console.ReadLine();
-
-            int.TryParse(level, out level_real);
-            int.TryParse(hp, out hp_real);
-            float.TryParse(exp, out exp_real);
-
-
-            Console.WriteLine($"{name}의 레벨은 {level_real}이고 HP는 {hp_real}이고 exp는 {exp_real * 100:F2}% 다.");*/
-
-            // 제어문 ---------------------------------------------
-
-            /*float exp = 0.5454f;
-            float exp2;
-            Console.WriteLine("경험치를 추가합니다.");
-            Console.Write("추가할 경험치 : ");
-            string tamp = Console.ReadLine();
-            float.TryParse(tamp, out exp2);
-
-            //실습 : exp에 있는 값과 추가로 입력받은 경험치의 합이 1이 넘어가면 레벨업 출력 1미만이면 현재경험치 출력
-            if (exp + exp2 >= 1)
+            while (true) // 무한루프 
             {
-                Console.WriteLine("레벨업");
-            }
-            else
-            {
-                Console.WriteLine($"{(exp*100) + (exp2*100)}%");
-            }
-            */
+                Console.WriteLine();
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine("행동을 결정하세요!");
+                Console.WriteLine("1. 일반공격 2. 방어 3. 스킬");
+                Console.WriteLine("-------------------------------------------------");
+                Console.WriteLine();
+                string key_press = Console.ReadLine(); // string으로 숫자를 입력 받는다
+                int.TryParse(key_press, out player_act); // string으로 입력받은 숫자를 int형으로 변환
 
-            //실습 : EXP가 1을 넘어 레벨업을 할때까지 계속 추가 경험치를 입력하도록 하는 코드
-
-            /*float exp = 0.5454f;
-            float exp2;
-            float total_exp = exp;
-;
-            while (true)
-            {
-                Console.WriteLine("경험치를 추가합니다.");
-                Console.Write("추가할 경험치 : ");
-                string tamp = Console.ReadLine();
-                float.TryParse(tamp, out exp2);
-
-                total_exp += exp2;
-                if(total_exp > 1.0)
+                if (player_act == 1)  // 일반공격
                 {
-                    Console.WriteLine("레벨업");
-                    Console.WriteLine($"현재 경험치 : {total_exp-1:f3}");
-                    break;
+                    h1.Attack(h2); // Player가 Orc 공격
+                    h2.Attack(h1); // Orc가 Player 공격
+                    h1.TestPrintStatus(); // Player 상태
+                    h2.TestPrintStatus(); // Orc 상태
                 }
-                Console.WriteLine($"현재 경험치 : {total_exp:f3}");
-            }*/
+                else if (player_act == 2) // 방어
+                {
+                    h1.Defense();
+                    Console.WriteLine($"플레이어가 오크의 공격을 방어했습니다. ( 3턴 )");
+                }
+                else if (player_act == 3) // 스킬 목록 
+                {
+                    Console.WriteLine();
+                    Console.WriteLine("--------------- 스킬 목록 ---------------");
+                    Console.WriteLine("1. 파이어볼");
+                    Console.WriteLine("-----------------------------------------");
+                    Console.WriteLine();
+                    string key_press2 = Console.ReadLine();  // 스킬 키입력
+                    int.TryParse(key_press2, out player_act2); // int형 변환
+                    if(player_act2 == 1) // 파이어볼 선택
+                    {
+                        h1.fire_ball(h2); // Player가 파이어볼 공격
+                        h2.Attack(h1); // Orc가 Player 공격
+                        h1.TestPrintStatus(); // Player 상태
+                        h2.TestPrintStatus(); // Orc 상태
+                    } 
+                    else
+                    {
+                        Console.WriteLine("잘못된 입력입니다 스킬 사용이 종료됩니다");
+                    }
+
+                }
+                else
+                {
+                    Console.WriteLine("잘못된 키입력입니다 다시 입력하세요!");
+                }
+
+                if (h1.HP <= 0) // Player의 hp가 0이하일때
+                {
+                    Console.WriteLine($"--------{h1.Name} 사망--------");
+                    break; // 무한루프 break
+
+                }
+                else if (h2.HP <= 0) // Orc의 hp가 0이하일때
+                {
+                    Console.WriteLine($"--------{h2.Name} 사망--------");
+                    break; // 무한루프 break
+                }
+            }
 
 
-            //Console.ReadKey();
+            Console.ReadKey(); // 키입력 대기
         }
+
     }
 }
